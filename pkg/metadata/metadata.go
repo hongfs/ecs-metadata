@@ -56,6 +56,10 @@ func Ram(name string) *RamInfo {
 		return nil
 	}
 
+	if ram.Code != "success" {
+		return nil
+	}
+
 	return &ram
 }
 
