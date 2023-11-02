@@ -41,6 +41,8 @@ type RamInfo struct {
 	Code            string    `json:"Code"`
 }
 
+var ErrRamInfoNil = errors.New("ram info is nil")
+
 func Ram(name string) *RamInfo {
 	data, err := request("ram/security-credentials/" + name)
 
