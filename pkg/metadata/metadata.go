@@ -39,6 +39,7 @@ type RamInfo struct {
 	SecurityToken   string    `json:"SecurityToken"`
 	LastUpdated     time.Time `json:"LastUpdated"`
 	Code            string    `json:"Code"`
+	Error           error     `json:"Error"`
 }
 
 var ErrRamInfoNil = errors.New("ram info is nil")
@@ -47,7 +48,9 @@ func Ram(name string) *RamInfo {
 	data, err := request("ram/security-credentials/" + name)
 
 	if err != nil {
-		return nil
+		return &RamInfo{
+			Error: err,
+		}
 	}
 
 	ram := RamInfo{}
@@ -55,11 +58,15 @@ func Ram(name string) *RamInfo {
 	err = json.Unmarshal([]byte(data), &ram)
 
 	if err != nil {
-		return nil
+		return &RamInfo{
+			Error: err,
+		}
 	}
 
 	if ram.AccessKeyID != "" {
-		return nil
+		return &RamInfo{
+			Error: errors.New(ram.Code),
+		}
 	}
 
 	return &ram
