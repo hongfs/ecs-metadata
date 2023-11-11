@@ -58,7 +58,7 @@ func Ram(name string) *RamInfo {
 		return nil
 	}
 
-	if ram.Code != "success" {
+	if ram.AccessKeyID != "" {
 		return nil
 	}
 
