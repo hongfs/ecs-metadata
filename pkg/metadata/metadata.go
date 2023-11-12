@@ -63,7 +63,7 @@ func Ram(name string) *RamInfo {
 		}
 	}
 
-	if ram.AccessKeyID != "" {
+	if ram.AccessKeyID == "" {
 		return &RamInfo{
 			Error: errors.New(ram.Code),
 		}
