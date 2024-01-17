@@ -45,6 +45,16 @@ type RamInfo struct {
 var ErrRamInfoNil = errors.New("ram info is nil")
 
 func Ram(name string) *RamInfo {
+	if name == "" {
+		name, _ = request("ram/security-credentials/")
+	}
+
+	if name == "" {
+		return &RamInfo{
+			Error: errors.New("ram name is empty"),
+		}
+	}
+
 	data, err := request("ram/security-credentials/" + name)
 
 	if err != nil {
