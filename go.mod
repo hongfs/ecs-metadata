@@ -6,6 +6,7 @@ require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.2
 	github.com/alibabacloud-go/ecs-20140526/v3 v3.0.7
 	github.com/alibabacloud-go/tea v1.1.19
+	go.uber.org/atomic v1.11.0
 )
 
 require (

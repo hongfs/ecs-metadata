@@ -3,10 +3,28 @@ package metadata
 import (
 	"encoding/json"
 	"errors"
+	"go.uber.org/atomic"
 	"io"
+	"log"
 	"net/http"
 	"time"
 )
+
+func init() {
+	go func() {
+		for {
+			if HasCacheRam.Load() {
+				err := refreshRam()
+
+				if err != nil {
+					log.Printf("refresh ram error: %v\n", err)
+				}
+			}
+
+			time.Sleep(time.Minute * 1)
+		}
+	}()
+}
 
 // Hostname 获取主机名
 func Hostname() string {
@@ -45,6 +63,39 @@ type RamInfo struct {
 var ErrRamInfoNil = errors.New("ram info is nil")
 
 func Ram(name string) *RamInfo {
+	// 走缓存
+	if HasCacheRam.Load() && cacheRam != nil && cacheRam.AccessKeyID != "" {
+		return cacheRam
+	}
+
+	return loadRam(name)
+}
+
+var HasCacheRam = atomic.NewBool(false)
+
+var cacheRam = &RamInfo{}
+
+func refreshRam() error {
+	ram := loadRam("")
+
+	if ram == nil {
+		return errors.New("ram is nil")
+	}
+
+	if ram.Error != nil {
+		return ram.Error
+	}
+
+	if ram.AccessKeyID == "" {
+		return errors.New("ram access key id is empty")
+	}
+
+	cacheRam = ram
+
+	return nil
+}
+
+func loadRam(name string) *RamInfo {
 	if name == "" {
 		name, _ = request("ram/security-credentials/")
 	}
