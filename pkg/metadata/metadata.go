@@ -20,6 +20,12 @@ func init() {
 				if err != nil {
 					log.Printf("refresh ram error: %v\n", err)
 				}
+
+				// 如果没有数据，那就快点进入下一个循环读取
+				if cacheRam.AccessKeyID == "" {
+					time.Sleep(time.Second * 1)
+					continue
+				}
 			}
 
 			time.Sleep(time.Minute * 1)
