@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -71,7 +72,11 @@ func Ram(name string) *RamInfo {
 	return loadRam(name)
 }
 
+// HasCacheRam 开启 RAM 数据缓存
 var HasCacheRam = atomic.NewBool(false)
+
+// HasEnvRam 开启 RAM 更新环境变量
+var HasEnvRam = atomic.NewBool(false)
 
 var cacheRam = &RamInfo{}
 
@@ -91,6 +96,12 @@ func refreshRam() error {
 	}
 
 	cacheRam = ram
+
+	if HasEnvRam.Load() {
+		os.Setenv("ALIBABA_CLOUD_ACCESS_KEY_ID", ram.AccessKeyID)
+		os.Setenv("ALIBABA_CLOUD_ACCESS_KEY_SECRET", ram.AccessKeySecret)
+		os.Setenv("ALIBABA_CLOUD_SECURITY_TOKEN", ram.SecurityToken)
+	}
 
 	return nil
 }
