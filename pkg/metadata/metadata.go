@@ -12,6 +12,11 @@ import (
 )
 
 func init() {
+	// 避免阿里云函数计算环境下运行后面内容
+	if os.Getenv("FC_ACCOUNT_ID") != "" {
+		return
+	}
+
 	go func() {
 		for {
 			if HasCacheRam.Load() {
