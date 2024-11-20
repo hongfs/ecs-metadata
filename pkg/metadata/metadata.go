@@ -92,7 +92,7 @@ var HasEnvRam = atomic.NewBool(false)
 var cacheRam = &RamInfo{}
 
 func refreshRam() error {
-	if os.Getenv("FC_INSTANCE_ID") == "" {
+	if os.Getenv("FC_INSTANCE_ID") != "" {
 		return nil
 	}
 
