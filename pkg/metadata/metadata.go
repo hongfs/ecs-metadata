@@ -92,6 +92,10 @@ var HasEnvRam = atomic.NewBool(false)
 var cacheRam = &RamInfo{}
 
 func refreshRam() error {
+	if os.Getenv("FC_INSTANCE_ID") == "" {
+		return nil
+	}
+
 	ram := loadRam("")
 
 	if ram == nil {
